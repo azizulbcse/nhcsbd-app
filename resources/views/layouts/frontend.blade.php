@@ -94,7 +94,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url('notice.php') }}" style="display: flex; align-items: center; gap: 8px; font-weight: 600; transition: 0.3s; text-decoration: none; color: #444; padding: 5px 10px;">
+                            <a href="{{ route('notice') }}" style="display: flex; align-items: center; gap: 8px; font-weight: 600; transition: 0.3s; text-decoration: none; color: #444; padding: 5px 10px;">
                                 <i class="bi bi-megaphone-fill" style="font-size: 18px; color: #00d2ff;"></i> Notice
                             </a>
                         </li>
