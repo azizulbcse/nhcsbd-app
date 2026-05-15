@@ -114,7 +114,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url('contact.php') }}" style="display: flex; align-items: center; gap: 8px; font-weight: 600; transition: 0.3s; text-decoration: none; color: #444; padding: 5px 10px;">
+                            <a href="{{ route('contact') }}" style="display: flex; align-items: center; gap: 8px; font-weight: 600; transition: 0.3s; text-decoration: none; color: #444; padding: 5px 10px;">
                                 <i class="bi bi-telephone-outbound-fill" style="font-size: 18px; color: #20c997;"></i> Contact
                             </a>
                         </li>
