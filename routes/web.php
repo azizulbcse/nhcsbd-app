@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DataMigrationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdministratorController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\DepositDetailsController;
@@ -14,8 +15,7 @@ Route::get('/', function () {
 });
 
 Route::group([], function () {
-    Route::get('/administrator-list', function () { return "Administrator List Page"; })->name('administrator.list');
-    Route::get('/member-list', function () { return "Member List Page"; })->name('member.list');
+    Route::get('/administrator-list', [AdministratorController::class, 'index'])->name('administrator.list');
     Route::get('/notice', [NoticeController::class, 'index'])->name('notice');
     Route::get('/gallery/photo', [GalleryController::class, 'photoGallery'])->name('gallery.photo');
     Route::get('/gallery/video', [GalleryController::class, 'videoGallery'])->name('gallery.video');
@@ -51,6 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
+Route::get('/update-user-pic-path', [DataMigrationController::class, 'updateUserPicPath']);
 Route::get('/migrate-old-notices', [DataMigrationController::class, 'migrateOldNotices']);
 Route::get('/migrate-old-gallery', [DataMigrationController::class, 'migrateOldGallery']);
 Route::get('/migrate-old-users', [DataMigrationController::class, 'migrateOldUsers']);

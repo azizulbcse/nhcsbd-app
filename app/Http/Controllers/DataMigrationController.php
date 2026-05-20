@@ -64,11 +64,7 @@ class DataMigrationController extends Controller
                 FROM tbladminuser;
             ");
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'ইউজার রেকর্ড নিখুঁতভাবে স্থানান্তরিত হয়েছে।'
-            ], 200);
-
+            return response()->json(['status' => 'success', 'message' => 'ইউজার রেকর্ড নিখুঁতভাবে স্থানান্তরিত হয়েছে।'], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
@@ -112,28 +108,22 @@ class DataMigrationController extends Controller
             ");
 
             return response()->json(['status' => 'success', 'message' => 'গ্যালারি ডাটা স্থানান্তরিত হয়েছে।'], 200);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
 
     /**
-     * ৩. ওল্ড নোটিশ ডাটা মাইগ্রেশন গেটওয়ে (পিওর র-কুয়েরি মোড এবং কাস্টম ট্র্যাকিং)
+     * ৩. ওল্ড নোটিশ ডাটা মাইগ্রেশন গেটওয়ে (অপরিবর্তিত ও সুরক্ষিত)
      * ব্রাউজার ইউআরএল: http://localhost:8000/migrate-old-notices
      */
     public function migrateOldNotices()
     {
         try {
-            // ১. ডাটাবেজে আপনার তৈরি করা পুরনো 'tblnotices' টেবিলটি আছে কি না নিশ্চিত হওয়া
             if (!Schema::hasTable('tblnotices')) {
-                return response()->json([
-                    'status' => 'error', 
-                    'message' => 'দুঃখিত, ডাটাবেজে tblnotices টেবিলটি পাওয়া যায়নি!'
-                ], 404);
+                return response()->json(['status' => 'error', 'message' => 'tblnotices পাওয়া যায়নি!'], 404);
             }
 
-            // ২. লারাভেল স্ট্যান্ডার্ডে নতুন 'notices' টেবিলটি তৈরি না থাকলে রানটাইমে পিওর কুয়েরি দিয়ে অটো-ক্রিয়েশন
             if (!Schema::hasTable('notices')) {
                 DB::statement("
                     CREATE TABLE `notices` (
@@ -152,38 +142,58 @@ class DataMigrationController extends Controller
                 ");
             }
 
-            // ৩. ডুপ্লিকেট ডাটা এড়াতে নতুন টেবিল ক্লিয়ার করার র-স্টেটমেন্ট
             DB::statement("SET FOREIGN_KEY_CHECKS = 0;");
             DB::table('notices')->truncate();
             DB::statement("SET FOREIGN_KEY_CHECKS = 1;");
 
-            // ৪. matrik স্টাইলে পিওর SQL কুয়েরি - পুরনো টেবিল থেকে সরাসরি নতুন টেবিলে ডাটা ইনসার্ট
             DB::statement("
                 INSERT INTO notices (id, noticeno, title, notice_date, content, file_name, created_by, status, created_at, updated_at)
-                SELECT 
-                    id AS id, /* পুরনো id সরাসরি প্রাইমারি কি-তে চলে যাবে */
-                    noticeno AS noticeno,
-                    title AS title,
-                    notice_date AS notice_date,
-                    content AS content,
-                    file_name AS file_name,
-                    creator_id AS created_by, /* স্ক্রিনশটের creator_id ট্র্যাকিং হিসেবে এসাইন হলো */
-                    IFNULL(status, 2) AS status, /* আপনার রিকোয়ারমেন্ট অনুযায়ী ডিরেক্ট স্ট্যাটাস ২ সিঙ্ক */
-                    IFNULL(created_at, NOW()) AS created_at,
-                    NOW() AS updated_at
-                FROM tblnotices;
+                SELECT id, noticeno, title, notice_date, content, file_name, creator_id, IFNULL(status, 2), IFNULL(created_at, NOW()), NOW() FROM tblnotices;
             ");
 
+            return response()->json(['status' => 'success', 'message' => 'নোটিশ মাইগ্রেশন সফল হয়েছে।'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * ৪. ডাটাবেজে ইউজার এবং অ্যাডমিনদের ছবির পাথ ক্লিন ও আপডেট করার প্রফেশনাল মেথড।
+     * ব্রাউজার ইউআরএল: http://localhost:8000/update-user-pic-path
+     */
+    public function updateUserPicPath()
+    {
+        try {
+            // ডাটাবেজ থেকে যাদের ইমেজ পাথে '../' ডিরেক্টরি ট্র্যাকিং আছে তাদের ফিল্টার করে তুলে আনা
+            $users = DB::table('users')->where('userpic', 'LIKE', '%../%')->get();
+            $updatedCount = 0;
+
+            foreach ($users as $user) {
+                // basename() মেথডটি '../assets/img/user/1773169009622d8c08bb79b.jpg' থেকে
+                // সরাসরি শুধু ক্লিন ফাইলের নাম '1773169009622d8c08bb79b.jpg' আলাদা করে নেবে।
+                $cleanFileName = basename($user->userpic);
+
+                DB::table('users')
+                    ->where('id', $user->id)
+                    ->update([
+                        'userpic'    => $cleanFileName,
+                        'updated_at' => now()
+                    ]);
+                
+                $updatedCount++;
+            }
+
             return response()->json([
-                'status'            => 'success',
-                'total_old_records' => DB::table('tblnotices')->count(),
-                'message'           => 'অভিনন্দন! পিওর র-কুয়েরি মোডে সমস্ত নোটিশ ডেটা নতুন notices টেবিলে সাকসেসফুলি ইনসার্ট হয়েছে।'
+                'status' => 'success',
+                'total_dirty_paths_found' => $users->count(),
+                'successfully_cleaned' => $updatedCount,
+                'message' => 'অভিনন্দন! ডাটাবেজের সমস্ত ইউজারের প্রোফাইল পিকচারের ওল্ড পাথ কেটে একদম ক্লিন স্ট্যান্ডার্ড ফাইলের নামে রূপান্তর করা হয়েছে।'
             ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'নোটিশ মাইগ্রেশন ব্যর্থ হয়েছে: ' . $e->getMessage()
+                'message' => 'পাথ ক্লিন ও আপডেট করতে ব্যর্থ হয়েছে: ' . $e->getMessage()
             ], 500);
         }
     }
