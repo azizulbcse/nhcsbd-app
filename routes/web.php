@@ -3,20 +3,13 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DataMigrationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ContactController;
 
-/*
 
-|--------------------------------------------------------------------------
-| ১. পাবলিক ফ্রন্টএন্ড রাউটস (Public Frontend Routes)
-|--------------------------------------------------------------------------
-
-| এই রাউটগুলো পোর্টালের সাধারণ ভিজিটরদের জন্য উন্মুক্ত থাকবে।
-*/
 Route::get('/', function () {
     return view('welcome');
 });
 
-// ফ্রন্টএন্ড মেনুবার নেভিগেশন গ্রুপ (নামকরণ ত্রুটি দূর করার জন্য কাস্টম ট্র্যাকিং)
 Route::group([], function () {
     Route::get('/administrator-list', function () { return "Administrator List Page"; })->name('administrator.list');
     Route::get('/member-list', function () { return "Member List Page"; })->name('member.list');
@@ -24,8 +17,10 @@ Route::group([], function () {
     Route::get('/gallery/photo', function () { return "Photo Gallery"; })->name('gallery.photo');
     Route::get('/gallery/video', function () { return "Video Gallery"; })->name('gallery.video');
     Route::get('/deposit-details', function () { return "Deposit Details Page"; })->name('deposit.details');
-    Route::get('/contact', function () { return "Contact Us Page"; })->name('contact');
-});
+
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+    Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
+    });
 
 /*
 |--------------------------------------------------------------------------
