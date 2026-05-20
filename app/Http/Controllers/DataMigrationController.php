@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 class DataMigrationController extends Controller
 {
     /**
-     * ১. ওল্ড ইউজার ডাটা মাইগ্রেশন গেটওয়ে (অপরিবর্তিত ও সুরক্ষিত)
+     * ১. ওল্ড ইউজার ডাটা মাইগ্রেশন গেটওয়ে
      * ব্রাউজার ইউআরএল: http://localhost:8000/migrate-old-users
      */
     public function migrateOldUsers()
@@ -46,148 +46,85 @@ class DataMigrationController extends Controller
 
             DB::statement("
                 INSERT INTO users (id, sl, name, email, designations, pcode, usertype, userpic, mobileno, role, status, password, created_at, updated_at)
-                SELECT 
-                    user_id AS id,
-                    sl AS sl, 
-                    fullname AS name,
-                    IF(username LIKE '%@%', username, CONCAT(username, '@nhcsbd.org')) AS email,
-                    designations,
-                    pcode,
-                    usertype,
-                    userpic,
-                    mobileno,
-                    IF(LOWER(usertype) = 'admin' OR role = 1, 'admin', 'member') AS role,
-                    IFNULL(status, 1) AS status,
-                    password, 
-                    NOW(),
-                    NOW()
-                FROM tbladminuser;
+                SELECT user_id, sl, fullname, IF(username LIKE '%@%', username, CONCAT(username, '@nhcsbd.org')), designations, pcode, usertype, userpic, mobileno, IF(LOWER(usertype) = 'admin' OR role = 1, 'admin', 'member'), IFNULL(status, 1), password, NOW(), NOW() FROM tbladminuser;
             ");
 
-            return response()->json(['status' => 'success', 'message' => 'ইউজার রেকর্ড নিখুঁতভাবে স্থানান্তরিত হয়েছে।'], 200);
+            return response()->json(['status' => 'success', 'message' => 'ইউজার রেকর্ড স্থানান্তরিত হয়েছে।'], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
 
     /**
-     * ২. ওল্ড গ্যালারি ডাটা মাইগ্রেশন গেটওয়ে (অপরিবর্তিত ও সুরক্ষিত)
+     * ২. ওল্ড গ্যালারি ডাটা মাইগ্রেশন গেটওয়ে
      * ব্রাউজার ইউআরএল: http://localhost:8000/migrate-old-gallery
      */
     public function migrateOldGallery()
     {
         try {
-            if (!Schema::hasTable('tblgallery')) {
-                return response()->json(['status' => 'error', 'message' => 'tblgallery পাওয়া যায়নি!'], 404);
-            }
-
+            if (!Schema::hasTable('tblgallery')) { return response()->json(['status' => 'error', 'message' => 'tblgallery পাওয়া যায়নি!'], 404); }
             if (!Schema::hasTable('galleries')) {
-                DB::statement("
-                    CREATE TABLE `galleries` (
-                      `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                      `title` varchar(255) NOT NULL,
-                      `media_type` enum('image','video') NOT NULL DEFAULT 'image',
-                      `file_name` text NOT NULL,
-                      `created_by` bigint(20) UNSIGNED NULL,
-                      `status` tinyint(4) NOT NULL DEFAULT '1',
-                      `upload_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                      `created_at` timestamp NULL DEFAULT NULL,
-                      `updated_at` timestamp NULL DEFAULT NULL,
-                      PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-                ");
+                DB::statement("CREATE TABLE `galleries` (`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, `title` varchar(255) NOT NULL, `media_type` enum('image','video') NOT NULL DEFAULT 'image', `file_name` text NOT NULL, `created_by` bigint(20) UNSIGNED NULL, `status` tinyint(4) NOT NULL DEFAULT '1', `upload_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `created_at` timestamp NULL DEFAULT NULL, `updated_at` timestamp NULL DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
             }
-
-            DB::statement("SET FOREIGN_KEY_CHECKS = 0;");
-            DB::table('galleries')->truncate();
-            DB::statement("SET FOREIGN_KEY_CHECKS = 1;");
-
-            DB::statement("
-                INSERT INTO galleries (id, title, media_type, file_name, created_by, status, upload_date, created_at, updated_at)
-                SELECT id, IFNULL(title, 'Untitled Media'), IFNULL(media_type, 'image'), file_name, 1, IFNULL(status, 2), IFNULL(upload_date, NOW()), NOW(), NOW() FROM tblgallery;
-            ");
-
+            DB::statement("SET FOREIGN_KEY_CHECKS = 0;"); DB::table('galleries')->truncate(); DB::statement("SET FOREIGN_KEY_CHECKS = 1;");
+            DB::statement("INSERT INTO galleries (id, title, media_type, file_name, created_by, status, upload_date, created_at, updated_at) SELECT id, IFNULL(title, 'Untitled Media'), IFNULL(media_type, 'image'), file_name, 1, IFNULL(status, 2), IFNULL(upload_date, NOW()), NOW(), NOW() FROM tblgallery;");
             return response()->json(['status' => 'success', 'message' => 'গ্যালারি ডাটা স্থানান্তরিত হয়েছে।'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
-        }
+        } catch (\Exception $e) { return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500); }
     }
 
     /**
-     * ৩. ওল্ড নোটিশ ডাটা মাইগ্রেশন গেটওয়ে (অপরিবর্তিত ও সুরক্ষিত)
+     * ৩. ওল্ড নোটিশ ডাটা মাইগ্রেশন গেটওয়ে
      * ব্রাউজার ইউআরএল: http://localhost:8000/migrate-old-notices
      */
     public function migrateOldNotices()
     {
         try {
-            if (!Schema::hasTable('tblnotices')) {
-                return response()->json(['status' => 'error', 'message' => 'tblnotices পাওয়া যায়নি!'], 404);
-            }
-
+            if (!Schema::hasTable('tblnotices')) { return response()->json(['status' => 'error', 'message' => 'tblnotices পাওয়া যায়নি!'], 404); }
             if (!Schema::hasTable('notices')) {
-                DB::statement("
-                    CREATE TABLE `notices` (
-                      `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                      `noticeno` varchar(255) NULL,
-                      `title` varchar(255) NOT NULL,
-                      `notice_date` date NOT NULL,
-                      `content` text NULL,
-                      `file_name` varchar(255) NULL,
-                      `created_by` bigint(20) UNSIGNED NULL,
-                      `status` tinyint(4) NOT NULL DEFAULT '1',
-                      `created_at` timestamp NULL DEFAULT NULL,
-                      `updated_at` timestamp NULL DEFAULT NULL,
-                      PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-                ");
+                DB::statement("CREATE TABLE `notices` (`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, `noticeno` varchar(255) NULL, `title` varchar(255) NOT NULL, `notice_date` date NOT NULL, `content` text NULL, `file_name` varchar(255) NULL, `created_by` bigint(20) UNSIGNED NULL, `status` tinyint(4) NOT NULL DEFAULT '1', `created_at` timestamp NULL DEFAULT NULL, `updated_at` timestamp NULL DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
             }
-
-            DB::statement("SET FOREIGN_KEY_CHECKS = 0;");
-            DB::table('notices')->truncate();
-            DB::statement("SET FOREIGN_KEY_CHECKS = 1;");
-
-            DB::statement("
-                INSERT INTO notices (id, noticeno, title, notice_date, content, file_name, created_by, status, created_at, updated_at)
-                SELECT id, noticeno, title, notice_date, content, file_name, creator_id, IFNULL(status, 2), IFNULL(created_at, NOW()), NOW() FROM tblnotices;
-            ");
-
+            DB::statement("SET FOREIGN_KEY_CHECKS = 0;"); DB::table('notices')->truncate(); DB::statement("SET FOREIGN_KEY_CHECKS = 1;");
+            DB::statement("INSERT INTO notices (id, noticeno, title, notice_date, content, file_name, creator_id, IFNULL(status, 2), IFNULL(created_at, NOW()), NOW() FROM tblnotices;");
             return response()->json(['status' => 'success', 'message' => 'নোটিশ মাইগ্রেশন সফল হয়েছে।'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
-        }
+        } catch (\Exception $e) { return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500); }
     }
 
     /**
-     * ৪. ডাটাবেজে ইউজার এবং অ্যাডমিনদের ছবির পাথ ক্লিন ও আপডেট করার প্রফেশনাল মেথড।
+     * ৪. অ্যাডমিন এবং সাধারণ মেম্বার (tblapplicantinfo) উভয়ের ছবির পাথ ক্লিন করার মাস্টার মেথড।
      * ব্রাউজার ইউআরএল: http://localhost:8000/update-user-pic-path
      */
     public function updateUserPicPath()
     {
         try {
-            // ডাটাবেজ থেকে যাদের ইমেজ পাথে '../' ডিরেক্টরি ট্র্যাকিং আছে তাদের ফিল্টার করে তুলে আনা
-            $users = DB::table('users')->where('userpic', 'LIKE', '%../%')->get();
-            $updatedCount = 0;
+            $cleanedAdmins = 0;
+            $cleanedMembers = 0;
 
-            foreach ($users as $user) {
-                // basename() মেথডটি '../assets/img/user/1773169009622d8c08bb79b.jpg' থেকে
-                // সরাসরি শুধু ক্লিন ফাইলের নাম '1773169009622d8c08bb79b.jpg' আলাদা করে নেবে।
-                $cleanFileName = basename($user->userpic);
+            // ক. প্রথমে লারাভেলের 'users' টেবিলের অ্যাডমিনদের ওল্ড পাথ ক্লিন করা
+            $dirtyAdmins = DB::table('users')->where('userpic', 'LIKE', '%assets/img/user%')->get();
+            foreach ($dirtyAdmins as $admin) {
+                DB::table('users')->where('id', $admin->id)->update([
+                    'userpic'    => basename($admin->userpic),
+                    'updated_at' => now()
+                ]);
+                $cleanedAdmins++;
+            }
 
-                DB::table('users')
-                    ->where('id', $user->id)
-                    ->update([
-                        'userpic'    => $cleanFileName,
-                        'updated_at' => now()
+            // খ. এবার স্ক্রিনশট অনুযায়ী 'tblapplicantinfo' টেবিলের সব সাধারণ সদস্যদের ওল্ড পাথ ক্লিন করা
+            if (Schema::hasTable('tblapplicantinfo')) {
+                $dirtyMembers = DB::table('tblapplicantinfo')->where('userpic', 'LIKE', '%assets/img/user%')->get();
+                foreach ($dirtyMembers as $member) {
+                    DB::table('tblapplicantinfo')->where('mid', $member->mid)->update([
+                        'userpic' => basename($member->userpic)
                     ]);
-                
-                $updatedCount++;
+                    $cleanedMembers++;
+                }
             }
 
             return response()->json([
                 'status' => 'success',
-                'total_dirty_paths_found' => $users->count(),
-                'successfully_cleaned' => $updatedCount,
-                'message' => 'অভিনন্দন! ডাটাবেজের সমস্ত ইউজারের প্রোফাইল পিকচারের ওল্ড পাথ কেটে একদম ক্লিন স্ট্যান্ডার্ড ফাইলের নামে রূপান্তর করা হয়েছে।'
+                'cleaned_admin_records_in_users' => $cleanedAdmins,
+                'cleaned_member_records_in_tblapplicantinfo' => $cleanedMembers,
+                'message' => 'অভিনন্দন! ডাটাবেজের অ্যাডমিন এবং সাধারণ মেম্বার (tblapplicantinfo) উভয়ের ছবির ওল্ড পাথ চিরতরে কেটে একদম ক্লিন ও ফিউচার-প্রুফ করা হয়েছে।'
             ], 200);
 
         } catch (\Exception $e) {
