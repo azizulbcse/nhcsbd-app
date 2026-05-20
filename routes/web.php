@@ -3,6 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DataMigrationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NoticeController;
+use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\DepositDetailsController;
 use App\Http\Controllers\ContactController;
 
 
@@ -13,15 +16,14 @@ Route::get('/', function () {
 Route::group([], function () {
     Route::get('/administrator-list', function () { return "Administrator List Page"; })->name('administrator.list');
     Route::get('/member-list', function () { return "Member List Page"; })->name('member.list');
-    Route::get('/notice', function () { return "Notice Board Page"; })->name('notice');
-    Route::get('/gallery/photo', function () { return "Photo Gallery"; })->name('gallery.photo');
-    Route::get('/gallery/video', function () { return "Video Gallery"; })->name('gallery.video');
-    Route::get('/deposit-details', function () { return "Deposit Details Page"; })->name('deposit.details');
-
+    Route::get('/notice', [NoticeController::class, 'index'])->name('notice');
+    Route::get('/gallery/photo', [GalleryController::class, 'photoGallery'])->name('gallery.photo');
+    Route::get('/gallery/video', [GalleryController::class, 'videoGallery'])->name('gallery.video');
+    Route::get('/deposit-details', [DepositDetailsController::class, 'index'])->name('deposit.details');
     Route::get('/contact', [ContactController::class, 'index'])->name('contact');
     Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
-    });
 
+});
 /*
 |--------------------------------------------------------------------------
 | ২. সুরক্ষিত ড্যাশবোর্ড ও প্রোফাইল রাউটস (Authenticated Dashboard Routes)
@@ -49,14 +51,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-/*
-
-|--------------------------------------------------------------------------
-| ৩. ডেটা মাইগ্রেশন ও ইউটিলিটি রাউটস (Utility Routes)
-|--------------------------------------------------------------------------
-
-| matrik স্টাইলে ব্রাউজার থেকে সরাসরি ডেটা অটো-ট্রান্সফার করার রাউট।
-*/
+Route::get('/migrate-old-notices', [DataMigrationController::class, 'migrateOldNotices']);
+Route::get('/migrate-old-gallery', [DataMigrationController::class, 'migrateOldGallery']);
 Route::get('/migrate-old-users', [DataMigrationController::class, 'migrateOldUsers']);
 
 /*
