@@ -1,4 +1,5 @@
-<footer id="footer" class="footer dark-background">
+<footer id="footer" class="footer dark-background no-print">
+    {{-- 'no-print' ক্লাসটি যোগ করায় লোন কোটেশন প্রিন্ট করার সময় এই ফুটারটি কাগজে আসবে না --}}
     <div class="footer-top">
         <div class="container">
             <div class="row gy-4">
@@ -32,9 +33,9 @@
                     <h4 class="footer-title">Useful Links</h4>
                     <ul class="list-unstyled">
                         <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/') }}">Home</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Constitution</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Administrator List</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Member List</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/') }}">Constitution</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/administrator-list') }}">Administrator List</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/member-list') }}">Member List</a></li>
                     </ul>
                 </div>
 
@@ -42,10 +43,10 @@
                 <div class="col-lg-2 col-md-3 footer-links">
                     <h4 class="footer-title">Our Services</h4>
                     <ul class="list-unstyled">
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Admin Login</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Member Login</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Deposit Details</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">EMI Calculator</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/login') }}">Admin Login</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/login') }}">Member Login</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/deposit-details') }}">Deposit Details</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/emi-calculator') }}">EMI Calculator</a></li>
                     </ul>
                 </div>
 
@@ -56,7 +57,8 @@
                         <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Help Center</a></li>
                         <li><i class="bi bi-chevron-right me-1"></i> <a href="#">How it Works</a></li>
                         <li><i class="bi bi-chevron-right me-1"></i> <a href="#">F.A.Qs</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Complain</a></li>
+                        {{-- ডাইনামিক কমপ্লেইন রাউট ম্যাপিং করা হলো --}}
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/contact') }}">Complain</a></li>
                     </ul>
                 </div>
 
@@ -64,8 +66,8 @@
                 <div class="col-lg-2 col-md-3 footer-links">
                     <h4 class="footer-title">Membership</h4>
                     <ul class="list-unstyled">
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Application for Join</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Terms & Condition</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/application4join') }}">Application for Join</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/terms-conditions') }}">Terms & Condition</a></li>
                         <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Visions</a></li>
                         <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Missions</a></li>
                     </ul>
@@ -96,13 +98,52 @@
     </div>
 </footer>
 
-<!-- Scroll Top -->
-<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<!-- Scroll Top (প্রিন্ট কপি থেকে সুরক্ষিত করা হলো) -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center no-print"><i class="bi bi-arrow-up-short"></i></a>
 
-<!-- Preloader -->
-<div id="preloader">
+<!-- Preloader (অফলাইন ব্লকিং রিমুভাল সেফটি লক সহ) -->
+<div id="preloader" class="no-print">
     <div></div>
     <div></div>
     <div></div>
     <div></div>
 </div>
+
+<!-- ========================================== -->
+<!-- ৩. গ্লোবাল মাস্টার প্রিন্ট প্রোটেকশন সিএসএস -->
+<!-- ========================================== -->
+<style>
+@media print {
+    /* প্রিন্ট করার সময় এই ফুটার স্ক্রিনের কোনো এলিমেন্ট যেন কুৎসিত জটলা না পাকায় */
+    .no-print, #footer, #scroll-top, #preloader {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+}
+</style>
+
+<!-- ========================================== -->
+<!-- ৪. প্রি-লোডার ডিফেন্সিভ জাভাস্ক্রিপ্ট ফেইলসেফ -->
+<!-- ========================================== -->
+<script>
+    // কোনো কারণে মেইন স্ক্রিপ্ট লোড হতে লেট হলেও প্রি-লোডার যেন ইউজার স্ক্রিনকে ব্লক না করে
+    window.addEventListener('load', function() {
+        const preloader = document.getElementById('preloader');
+        if (preloader) {
+            preloader.style.opacity = '0';
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 300);
+        }
+    });
+    // ফেইলসেফ ব্যাকআপ: ৫ সেকেন্ডের বেশি প্রি-লোডার স্ক্রিনে কোনোভাবেই থাকবে না
+    setTimeout(() => {
+        const preloader = document.getElementById('preloader');
+        if (preloader && preloader.style.display !== 'none') {
+            preloader.style.display = 'none';
+        }
+    }, 5000);
+</script>

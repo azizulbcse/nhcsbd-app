@@ -53,9 +53,9 @@
                     <div class="contact-info d-flex align-items-center ms-4">
                         <span>
                             <!-- লারাভেল স্ট্যান্ডার্ড লগইন লিঙ্কিং সেট করা হলো -->
-                            <a href="{{ route('login') }}" class="ms-3"><i class="bi bi-shield-lock-fill me-1"></i>Admin Login</a>    
+                            <a href="nhcsbd/nurses_access_789.php" class="ms-3"><i class="bi bi-shield-lock-fill me-1"></i>Admin Login</a>    
                             <span class="mx-2">|</span>
-                            <a href="{{ route('login') }}"><i class="bi bi-person-circle me-1"></i>Member Login</a>
+                            <a href="nhcsbd/member-login.php"><i class="bi bi-person-circle me-1"></i>Member Login</a>
                         </span>
                     </div>
                 </div>

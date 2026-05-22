@@ -9,11 +9,13 @@ use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\DepositDetailsController;
 use App\Http\Controllers\ContactController;
-
+use App\Http\Controllers\RegistrationController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+
 
 Route::group([], function () {
     Route::get('/administrator-list', [AdministratorController::class, 'index'])->name('administrator.list');
@@ -24,7 +26,10 @@ Route::group([], function () {
     Route::get('/deposit-details', [DepositDetailsController::class, 'index'])->name('deposit.details');
     Route::get('/contact', [ContactController::class, 'index'])->name('contact');
     Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
-
+    Route::get('/emi-calculator', function () { return view('frontend.emi-calculator');})->name('loan.calculator');
+    Route::get('/application4join', [RegistrationController::class, 'index'])->name('member.join');
+    Route::post('/application4join/submit', [RegistrationController::class, 'submit'])->name('member.join.submit');
+    Route::get('/terms-conditions', function () { return view('frontend.terms');})->name('pages.terms');
 });
 /*
 |--------------------------------------------------------------------------
