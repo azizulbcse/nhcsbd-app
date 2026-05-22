@@ -29,13 +29,14 @@
                 </div>
 
                 <!-- Useful Links -->
+                                <!-- Useful Links -->
                 <div class="col-lg-2 col-md-3 footer-links">
                     <h4 class="footer-title">Useful Links</h4>
                     <ul class="list-unstyled">
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/') }}">Home</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/') }}">Constitution</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/administrator-list') }}">Administrator List</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/member-list') }}">Member List</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ route('home') ?? url('/') }}">Home</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ route('pages.constitution') }}">Constitution</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ route('administrator.list') ?? url('/administrator-list') }}">Administrator List</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ route('member.list') ?? url('/member-list') }}">Member List</a></li>
                     </ul>
                 </div>
 
@@ -46,7 +47,7 @@
                         <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/login') }}">Admin Login</a></li>
                         <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/login') }}">Member Login</a></li>
                         <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/deposit-details') }}">Deposit Details</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/emi-calculator') }}">EMI Calculator</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ route('loan.calculator') ?? url('/emi-calculator') }}">EMI Calculator</a></li>
                     </ul>
                 </div>
 
@@ -54,11 +55,10 @@
                 <div class="col-lg-2 col-md-3 footer-links">
                     <h4 class="footer-title">Quick Support</h4>
                     <ul class="list-unstyled">
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Help Center</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">How it Works</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">F.A.Qs</a></li>
-                        {{-- ডাইনামিক কমপ্লেইন রাউট ম্যাপিং করা হলো --}}
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/contact') }}">Complain</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/notice') }}">Official Notice</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/gallery/photo') }}">Photo Gallery</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/gallery/video') }}">Video Gallery</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ route('contact') ?? url('/contact') }}">Complain / Support</a></li>
                     </ul>
                 </div>
 
@@ -66,12 +66,14 @@
                 <div class="col-lg-2 col-md-3 footer-links">
                     <h4 class="footer-title">Membership</h4>
                     <ul class="list-unstyled">
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/application4join') }}">Application for Join</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/terms-conditions') }}">Terms & Condition</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Visions</a></li>
-                        <li><i class="bi bi-chevron-right me-1"></i> <a href="#">Missions</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ route('member.join') ?? url('/application4join') }}">Application for Join</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ route('pages.terms') ?? url('/terms-conditions') }}">Terms & Condition</a></li>
+                        {{-- ডামি লিংক বাদ দিয়ে এগুলোকে একটি সিঙ্গেল প্রফেশনাল স্ট্যাটিক পেজে এসাইন করার জন্য রেডি রাখা হলো --}}
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/about') }}">Our Visions</a></li>
+                        <li><i class="bi bi-chevron-right me-1"></i> <a href="{{ url('/about') }}">Our Missions</a></li>
                     </ul>
                 </div>
+
 
             </div>
         </div>

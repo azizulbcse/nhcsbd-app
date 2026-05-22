@@ -11,11 +11,16 @@ use App\Http\Controllers\DepositDetailsController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\RegistrationController;
 
+/*
+
+|--------------------------------------------------------------------------
+| ১. রুট এবং পাবলিক ফ্রন্টএন্ড নেভিগেশন রাউটস (Public Frontend Routes)
+|--------------------------------------------------------------------------
+*/
+// হোমপেজ রাউটে নেমড রাউট 'home' যুক্ত করা হলো (যা ফুটারের এররটি স্থায়ীভাবে ফিক্স করবে)
 Route::get('/', function () {
     return view('welcome');
-});
-
-
+})->name('home');
 
 Route::group([], function () {
     Route::get('/administrator-list', [AdministratorController::class, 'index'])->name('administrator.list');
@@ -26,17 +31,26 @@ Route::group([], function () {
     Route::get('/deposit-details', [DepositDetailsController::class, 'index'])->name('deposit.details');
     Route::get('/contact', [ContactController::class, 'index'])->name('contact');
     Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
-    Route::get('/emi-calculator', function () { return view('frontend.emi-calculator');})->name('loan.calculator');
+    Route::get('/emi-calculator', function () { return view('frontend.emi-calculator'); })->name('loan.calculator');
     Route::get('/application4join', [RegistrationController::class, 'index'])->name('member.join');
     Route::post('/application4join/submit', [RegistrationController::class, 'submit'])->name('member.join.submit');
-    Route::get('/terms-conditions', function () { return view('frontend.terms');})->name('pages.terms');
-});
+    Route::get('/terms-conditions', function () { return view('frontend.terms'); })->name('pages.terms');
+    Route::get('/constitution', function () { return view('frontend.constitution');})->name('pages.constitution');
+    Route::get('/about', function () { return view('frontend.about');})->name('pages.about');
+    
+    // routes/web.php ফাইলে এই ২টি লাইন যোগ করে রাখতে পারেন
+Route::get('/admin-login', function () { return redirect('/nhcsbd-row/nurses_access_789.php'); })->name('auth.admin');
+Route::get('/member-login', function () { return redirect('/nhcsbd-row/member-login.php'); })->name('auth.member');
+
+    });
+
 /*
-|--------------------------------------------------------------------------
-| ২. সুরক্ষিত ড্যাশবোর্ড ও প্রোফাইল রাউটস (Authenticated Dashboard Routes)
 
 |--------------------------------------------------------------------------
-| শুধুমাত্র লগইন করা (Status = 2) ইউজাররাই এই রাউটগুলোতে প্রবেশ করতে পারবেন।
+| ২. সুরক্ষিত ড্যাশবোর্ড ও প্রোফাইল রাউটস (Authenticated Dashboard Routes)
+|--------------------------------------------------------------------------
+
+| শুধুমাত্র লগইন করা ইউজাররাই এই রাউটগুলোতে প্রবেশ করতে পারবেন।
 */
 Route::middleware(['auth', 'verified'])->group(function () {
     
@@ -58,6 +72,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
+/*
+|--------------------------------------------------------------------------
+| ৩. matrik স্টাইল ওল্ড ডাটা মাইগ্রেশন এবং পাথ ক্লিনার গেটওয়ে রাউটস
+
+|--------------------------------------------------------------------------
+*/
 Route::get('/update-user-pic-path', [DataMigrationController::class, 'updateUserPicPath']);
 Route::get('/migrate-old-notices', [DataMigrationController::class, 'migrateOldNotices']);
 Route::get('/migrate-old-gallery', [DataMigrationController::class, 'migrateOldGallery']);
@@ -65,7 +85,7 @@ Route::get('/migrate-old-users', [DataMigrationController::class, 'migrateOldUse
 
 /*
 |--------------------------------------------------------------------------
-| ৪. লারাভেল ব্রিজ অথেনটিকেশন ইঞ্জিন (Auth Engine)
+| ৪. লারাভেল ব্রিজ অথেনটিকেশন engine (Auth Engine)
 |--------------------------------------------------------------------------
 */
 require __DIR__.'/auth.php';

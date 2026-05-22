@@ -51,12 +51,8 @@
                 <div class="contact-info d-flex align-items-center">
                     <i class="bi bi-envelope d-flex align-items-center"><a href="mailto:nhcs.bd.org@gmail.com">nhcs.bd.org@gmail.com</a></i>
                     <div class="contact-info d-flex align-items-center ms-4">
-                        <span>
-                            <!-- লারাভেল স্ট্যান্ডার্ড লগইন লিঙ্কিং সেট করা হলো -->
-                            <a href="nhcsbd/nurses_access_789.php" class="ms-3"><i class="bi bi-shield-lock-fill me-1"></i>Admin Login</a>    
-                            <span class="mx-2">|</span>
-                            <a href="nhcsbd/member-login.php"><i class="bi bi-person-circle me-1"></i>Member Login</a>
-                        </span>
+                        <a href="{{ route('auth.admin') }}" class="ms-3"><i class="bi bi-shield-lock-fill me-1"></i>Admin Login</a><span class="mx-2">|</span>
+                        <a href="{{ route('auth.member') }}"><i class="bi bi-person-circle me-1"></i>Member Login</a>
                     </div>
                 </div>
                 <div class="social-links d-none d-md-flex align-items-center">
