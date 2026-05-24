@@ -45,8 +45,11 @@ class ContactController extends Controller
             <p><strong>Message:</strong><br>" . nl2br(e($validated['message'])) . "</p>
         ";
 
-        Mail::html($htmlContent, function ($message) use ($validated) {
-            $message->to('nhcs.bd.org@gmail.com')
+        // ৪. ল্যারাভেল স্ট্যান্ডার্ড অনুযায়ী .env ফাইলের নতুন ডাইনামিক ইউজারনেম সিঙ্ক
+        $recipientEmail = config('mail.from.address', 'nhcs.org.bd@gmail.com');
+
+        Mail::html($htmlContent, function ($message) use ($validated, $recipientEmail) {
+            $message->to($recipientEmail) // আপনার নতুন ফিক্সড জিমেইল অ্যাকাউন্টে অটোমেটিক মেইল যাবে
                     ->subject('New NHCS Contact: ' . $validated['subject']);
         });
 

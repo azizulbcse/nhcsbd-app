@@ -1,0 +1,61 @@
+<?php 	
+require_once 'core.php'; 
+$sql = "SELECT tai.mid,tai.name_bangla,tai.userpic,tai.name_english,tai.fathers_name,thn.hospitalname,tai.gender,tai.age,tai.mobileno,
+tai.createdate,tai.status FROM tblapplicantinfosh tai, tblhospitalname thn WHERE tai.hospitalname=thn.hid AND tai.status!=0
+ORDER BY tai.createdate asc";
+$result = $connect->query($sql);
+$output = array('data' => array());
+$count=1;
+if($result->num_rows > 0) { 
+
+ while($row = $result->fetch_array()) {
+ 	$userid = $row[0];
+	 if($row[10] == 1) 
+	{
+		$status = "Pending";
+	} 
+ 	else if($row[10] == 2) 
+	{
+ 		$status = "<label class='label label-success'> Approved </label>";
+ 	} 
+	else
+	{
+ 		$status = "<label class='label label-danger'>Cancel</label>";
+	}
+ 	$button = '<!-- Single button -->
+	<div class="btn-group">
+	  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	  Action<span class="caret"></span>
+	  </button>
+	  <ul class="dropdown-menu">
+	    <li><a type="button" data-toggle="modal" data-target="#editApplicantInfoModel" onclick="editApplicantInfo('.$userid.')"> <i class="glyphicon glyphicon-edit"></i> Edit </a></li>
+		<li><a type="button" onclick="PrintShareHolderProfile('.$userid.')"> <i class="glyphicon glyphicon-print"></i> Print Profile </a></li>
+		<li><a type="button" data-toggle="modal" data-target="#postedApplicantInfoModal" onclick="postedApplicantInfo('.$userid.')"> <i class="glyphicon glyphicon-ok"></i> Approved </a></li>
+	    <li><a type="button" data-toggle="modal" data-target="#removeApplicantInfoModal" onclick="removeApplicantInfo('.$userid.')"> <i class="glyphicon glyphicon-trash"></i> Canceled </a></li>       
+	  </ul>
+	</div>';
+	$imageUrl = substr($row[2], 3);
+	$UserPhoto = "<img class='img-round' src='".$imageUrl."' style='height:120px; width:90px;' />";
+
+ 	$output['data'][] = array( 		
+		$count,		
+		$UserPhoto,	
+ 		$row[1],
+		$row[3],
+		$row[4],
+		$row[5],
+		$row[6],
+		$row[7],
+		$row[8],
+		$row[9],
+		$status,	
+ 		$button
+ 		); 	
+	   $count++;
+ } // /while 
+
+} // if num_rows
+
+$connect->close();
+
+echo json_encode($output);

@@ -49,7 +49,7 @@
         <div class="topbar d-flex align-items-center light-background">
             <div class="container d-flex justify-content-center justify-content-md-between">
                 <div class="contact-info d-flex align-items-center">
-                    <i class="bi bi-envelope d-flex align-items-center"><a href="mailto:nhcs.bd.org@gmail.com">nhcs.bd.org@gmail.com</a></i>
+                    <i class="bi bi-envelope d-flex align-items-center"><a href="mailto:nhcs.org.bd@gmail.com">nhcs.org.bd@gmail.com</a></i>
                     <div class="contact-info d-flex align-items-center ms-4">
                         <a href="{{ route('auth.admin') }}" class="ms-3"><i class="bi bi-shield-lock-fill me-1"></i>Admin Login</a><span class="mx-2">|</span>
                         <a href="{{ route('auth.member') }}"><i class="bi bi-person-circle me-1"></i>Member Login</a>

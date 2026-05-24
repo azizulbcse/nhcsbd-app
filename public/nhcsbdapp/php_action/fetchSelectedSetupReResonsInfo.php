@@ -1,0 +1,15 @@
+<?php
+require_once 'core.php';
+
+$BankId = $_POST['BankId'];
+
+$sql = "SELECT rrid, resignresons FROM tblresignreasonsinfo WHERE rrid = $BankId AND status=1"; 
+$result = $connect->query($sql);
+
+if($result->num_rows > 0) { 
+ $row = $result->fetch_array();
+} // if num_rows
+
+$connect->close();
+
+echo json_encode($row);

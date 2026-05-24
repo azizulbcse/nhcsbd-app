@@ -11,13 +11,6 @@ use App\Http\Controllers\DepositDetailsController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\RegistrationController;
 
-/*
-
-|--------------------------------------------------------------------------
-| ১. রুট এবং পাবলিক ফ্রন্টএন্ড নেভিগেশন রাউটস (Public Frontend Routes)
-|--------------------------------------------------------------------------
-*/
-// হোমপেজ রাউটে নেমড রাউট 'home' যুক্ত করা হলো (যা ফুটারের এররটি স্থায়ীভাবে ফিক্স করবে)
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
@@ -35,36 +28,34 @@ Route::group([], function () {
     Route::get('/application4join', [RegistrationController::class, 'index'])->name('member.join');
     Route::post('/application4join/submit', [RegistrationController::class, 'submit'])->name('member.join.submit');
     Route::get('/terms-conditions', function () { return view('frontend.terms'); })->name('pages.terms');
-    Route::get('/constitution', function () { return view('frontend.constitution');})->name('pages.constitution');
-    Route::get('/about', function () { return view('frontend.about');})->name('pages.about');
+    Route::get('/constitution', function () { return view('frontend.constitution'); })->name('pages.constitution');
+    Route::get('/about', function () { return view('frontend.about'); })->name('pages.about');
     
-    // routes/web.php ফাইলে এই ২টি লাইন যোগ করে রাখতে পারেন
-Route::get('/admin-login', function () { return redirect('/nhcsbd-row/nurses_access_789.php'); })->name('auth.admin');
-Route::get('/member-login', function () { return redirect('/nhcsbd-row/member-login.php'); })->name('auth.member');
+    Route::get('/admin-login', function () { 
+        return redirect('/nhcsbdapp/nurses_access_789.php'); 
+    })->name('auth.admin');
+    
+    Route::get('/member-login', function () { 
+        return redirect('/nhcsbdapp/member-login.php'); 
+    })->name('auth.member');
+});
 
-    });
 
-/*
-
-|--------------------------------------------------------------------------
-| ২. সুরক্ষিত ড্যাশবোর্ড ও প্রোফাইল রাউটস (Authenticated Dashboard Routes)
-|--------------------------------------------------------------------------
-
-| শুধুমাত্র লগইন করা ইউজাররাই এই রাউটগুলোতে প্রবেশ করতে পারবেন।
-*/
 Route::middleware(['auth', 'verified'])->group(function () {
     
-    // সাধারণ মেম্বার ড্যাশবোর্ড
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 
-    // অ্যাডমিনিস্ট্রেটর ড্যাশবোর্ড (Webarch থিম লেআউট)
     Route::get('/admin/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 
-    // ইউজার প্রোফাইল ম্যানেজমেন্ট (লারাভেল ব্রিজ বিল্ট-ইন)
+    Route::get('/admin/notice', [NoticeController::class, 'adminIndex'])->name('admin.notice.index');
+    Route::get('/admin/notice/create', [NoticeController::class, 'create'])->name('admin.notice.create');
+    Route::post('/admin/notice/store', [NoticeController::class, 'store'])->name('admin.notice.store');
+
+
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/profile', 'edit')->name('profile.edit');
         Route::patch('/profile', 'update')->name('profile.update');
@@ -79,13 +70,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/update-user-pic-path', [DataMigrationController::class, 'updateUserPicPath']);
+use Illuminate\Support\Facades\DB;
 Route::get('/migrate-old-notices', [DataMigrationController::class, 'migrateOldNotices']);
 Route::get('/migrate-old-gallery', [DataMigrationController::class, 'migrateOldGallery']);
 Route::get('/migrate-old-users', [DataMigrationController::class, 'migrateOldUsers']);
 
 /*
 |--------------------------------------------------------------------------
-| ৪. লারাভেল ব্রিজ অথেনটিকেশন engine (Auth Engine)
+| ৪. লারাভেল ব্রিজ অথেনটিকেশন ইঞ্জিন (Auth Engine)
 |--------------------------------------------------------------------------
 */
 require __DIR__.'/auth.php';
