@@ -63,12 +63,13 @@
 
                                 <!-- ডাউনলোড বাটন সেকশন (ডান পাশ) -->
                                 <div class="col-sm-3 col-md-3 text-sm-end mt-3 mt-sm-0">
-                                                                        @if(!empty($notice->file_name))
-                                        <!-- 🎯 পাথ ফিক্স: ওল্ড আপলোড ইঞ্জিনের সাথে মিল রেখে 'notices' সাব-ফোল্ডারে ম্যাপিং করা হলো -->
-                                        <a href="{{ asset('uploads/notices/' . $notice->file_name) }}" target="_blank" rel="noopener" class="btn btn-outline-primary rounded-pill px-4 py-2 transition-all w-100 fw-semibold">
-                                            <i class="bi bi-file-earmark-pdf-fill me-2"></i> ডাউনলোড/দেখা
-                                        </a>
-                                    @else
+                                                                                                        @if(!empty($notice->file_name))
+                                    <!-- 🎯 পাথ ফিক্স: লাইভ হোস্টিং ডকুমেন্ট রুট অনুযায়ী 'nhcsbdapp/' কেটে দিয়ে পিউর আপলোড পাথে ম্যাপিং করা হলো -->
+                                    <a href="{{ asset('uploads/notices/' . $notice->file_name) }}" target="_blank" rel="noopener" class="btn btn-outline-primary rounded-pill px-4 py-2 transition-all w-100 fw-semibold">
+                                        <i class="bi bi-file-earmark-pdf-fill me-2"></i> ডাউনলোড/দেখা
+                                    </a>
+                                @else
+
     <span class="badge bg-light text-secondary border px-3 py-2 rounded-pill w-100 fw-medium" style="font-size: 13px; border-color: #e2e8f0 !important;">
                                             <i class="bi bi-info-circle me-1"></i> শুধুমাত্র নোটিশ
                                         </span>

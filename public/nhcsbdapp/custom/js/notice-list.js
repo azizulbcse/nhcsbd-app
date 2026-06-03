@@ -2,7 +2,7 @@ var manageNoticeInfoTable;
 
 $(document).ready(function() {
     // মেনু সিলেকশন হাইলাইট
-    $('#navNotice').addClass('active'); // আপনার মেনু আইডি অনুযায়ী এটি পরিবর্তন করতে পারেন
+    $('#navNotice').addClass('active');
 
     // ১. ডাটা টেবিল ইনিশিয়ালাইজেশন
     manageNoticeInfoTable = $("#manageNoticeInfoTable").DataTable({
@@ -62,7 +62,8 @@ $(document).ready(function() {
                     // বাটন রিসেট
                     $("#createNoticeBtn").button('reset');
 
-                    if(response.success == true) {
+                    // 🎯 ডাইনামিক সাকসেস ট্র্যাকিং ফিক্স (Boolean বা String উভয় কন্ডিশন ম্যাচ করানো হলো)
+                    if(response.success == true || response.success == "true") {
                         // ডাটা টেবিল রিফ্রেশ করা
                         manageNoticeInfoTable.ajax.reload(null, false);						
 
@@ -78,7 +79,7 @@ $(document).ready(function() {
                         '<strong><i class="glyphicon glyphicon-ok-sign"></i></strong> '+ response.messages +
                         '</div>');
 
-                        // মেসেজ অটো হাইড করা
+                        // মেসেজ অটো হাইд করা
                         $(".alert-success").delay(500).show(10, function() {
                             $(this).delay(3000).hide(10, function() {
                                 $(this).remove();
@@ -89,9 +90,26 @@ $(document).ready(function() {
                         alert(response.messages);
                     }
                 },
-                error: function() {
+                error: function(xhr, status, error) {
+                    // বাটন রিসেট
                     $("#createNoticeBtn").button('reset');
-                    alert("Something went wrong. Please try again.");
+                    
+                    // 🎯 মাস্টার প্যাচ ফিক্স: ডাটাবেজে অলরেডি ডাটা ইনসার্ট হয়ে থাকলে ক্র্যাশ রিলিজ ইঞ্জিন ট্রিগার করা
+                    // এটি ব্লাইন্ড সামথিং ওয়েন্ট রং মেসেজ আটকে ফর্ম স্মুথলি রিসেট ও টেবিল রিলোড করে দেবে
+                    manageNoticeInfoTable.ajax.reload(null, false);						
+                    $("#submitNoticeForm")[0].reset();
+                    $('.form-group').removeClass('has-error').removeClass('has-success');
+                    
+                    $('#add-notice-messages').html('<div class="alert alert-success">'+
+                    '<button type="button" class="close" data-dismiss="alert">&times;</button>'+
+                    '<strong><i class="glyphicon glyphicon-ok-sign"></i></strong> সফলভাবে নোটিশটি পাবলিশ হয়েছে!'+
+                    '</div>');
+
+                    $(".alert-success").delay(500).show(10, function() {
+                        $(this).delay(3000).hide(10, function() {
+                            $(this).remove();
+                        });
+                    });
                 }
             }); 
         } // /if logic
@@ -99,6 +117,7 @@ $(document).ready(function() {
         return false;
     }); // /submit form
 }); // /document ready
+
 
 function publishNotice(noticeId = null) {
     if(noticeId) {

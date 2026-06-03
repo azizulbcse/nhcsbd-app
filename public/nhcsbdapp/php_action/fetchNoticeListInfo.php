@@ -1,9 +1,11 @@
 <?php 	
-// ১. ক্যারেক্টার সেট এবং হেডার সিকিউরিটি লক করা
+// ==========================================================================
+// ১. ক্যারেক্টার সেট এবং হেডার সিকিউরিটি লক করা (জেসন রেসপন্স ফরমেট এলাইনমেন্ট)
+// ==========================================================================
 header('Content-Type: application/json; charset=utf-8');
 require_once 'core.php'; 
 
-// 🎯 স্ক্রিনশট অনুযায়ী আসল টেবিল 'notices' দিয়ে কুয়েরি ফিক্স করা হলো
+// ডাটাবেজ টেবিল 'notices' থেকে আইডি অনুযায়ী লেটেস্ট ডাটা তুলে আনার কুয়েরি
 $sql = "SELECT id, noticeno, DATE_FORMAT(notice_date, '%d/%m/%Y') as notice_date, title, content, file_name, status FROM notices ORDER BY id DESC";
 
 $result = $connect->query($sql);
@@ -16,46 +18,47 @@ if($result->num_rows > 0) {
         $fileName = $row['file_name'];
         $statusValue = $row['status'];
 
-        // ২. আপনার ডাটাবেজ স্ট্যাটাস কমেন্ট (2 = Published) অনুযায়ী লেবেল সেট করা
+        // ২. ডাটাবেজ কমেন্ট (2 = Published, 1 = Pending) অনুযায়ী বুটস্ট্র্যাপ লেবেল সেট করা
         if($statusValue == 1) {
-            $status = "<label class='label label-warning'> Pending </label>";
+            $status = "<span class='label label-warning'> Pending </span>";
         } else if($statusValue == 2) {
-            $status = "<label class='label label-success'> Published </label>";
+            $status = "<span class='label label-success'> Published </span>";
         } else {
-            $status = "<label class='label label-danger'> Cancel </label>";
+            $status = "<span class='label label-danger'> Cancel </span>";
         }
 
-        // ৩. 🎯 ফ্রন্টএন্ড পাথের সাথে মিল রেখে ওল্ড প্যানেলের জন্য ফাইল ভিউ পাথ ফিক্স
-        // ডাবল ব্যাকট্র্যাকিং দিয়ে সরাসরি 'notices' সাব-ফোল্ডার চ্যাপ্টার রিড করবে
+        // ৩. 🎯 ফাইল ভিউ পাথ টিউনিং ফিক্স
+        // যেহেতু এই ফাইলটি php_action ফোল্ডারের ভেতর আছে এবং আপলোড করা ফাইলগুলি public/uploads/notices/ পাথে জমা হচ্ছে, 
+        // তাই র-পিএইচপি প্যানেল থেকে সরাসরি দেখতে এখানে পাথ হবে 'uploads/notices/'
         $fileView = "";
         if(!empty($fileName)) {
-            $fileView = "<a href='../uploads/notices/".$fileName."' target='_blank' class='btn btn-xs btn-info'> <i class='glyphicon glyphicon-eye-open'></i> View </a>";
+            $fileView = "<a href='uploads/notices/".$fileName."' target='_blank' class='btn btn-xs btn-info'> <i class='glyphicon glyphicon-eye-open'></i> View </a>";
         } else {
             $fileView = "<span class='label label-default'> No File </span>";
         }
 
-        // ৪. Action বাটনসমূহ (আপনার অরিジナル এজাক্স মোডাল হুক অক্ষত রাখা হলো)
+        // ৪. অ্যাকশন বাটনসমূহ (আপনার অরিジナル মোডাল পপ-আপ হুক অক্ষত রাখা হলো)
         $button = '
         <div class="btn-group">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Action <span class="caret"></span>
           </button>
-          <ul class="dropdown-menu">
+          <ul class="dropdown-menu pull-right">
             <li><a type="button" data-toggle="modal" data-target="#publishNoticeModal" onclick="publishNotice('.$noticeId.')"> <i class="glyphicon glyphicon-ok"></i> Publish </a></li>
             <li><a type="button" data-toggle="modal" data-target="#removeNoticeModal" onclick="removeNotice('.$noticeId.')"> <i class="glyphicon glyphicon-trash"></i> Cancel</a></li>       
           </ul>
         </div>';
 
-        // ৫. আউটপুট অ্যারে (আপনার ওল্ড DataTable-এর কলাম ইনডেক্স অনুযায়ী ম্যাপিং)
+        // ৫. আউটপুট অ্যারে (আপনার ওল্ড HTML টেবিলেরthead কলাম ইণ্ডেক্স অনুযায়ী নিখুঁত ম্যাপিং)
         $output['data'][] = array( 	
-            $count,                // Index 0: SL
-            $row['noticeno'],      // Index 1: Notice No
-            $row['notice_date'],   // Index 2: Date
-            $row['title'],         // Index 3: Title
-            $row['content'],       // Index 4: Content
-            $fileView,             // Index 5: File View Button
+            $count,                // Index 0: ক্রমিক নং
+            $row['noticeno'],      // Index 1: স্মারক নং
+            $row['notice_date'],   // Index 2: তারিখ
+            $row['title'],         // Index 3: বিষয়
+            $row['content'],       // Index 4: বিস্তারিত
+            $fileView,             // Index 5: Attachment (View Button)
             $status,               // Index 6: Status		
-            $button                // Index 7: Action Button
+            $button                // Index 7: Option (Action Button)
         ); 	
         $count++;
     } 
@@ -64,6 +67,6 @@ if($result->num_rows > 0) {
 // ডাটাবেজ কানেকশন বন্ধ করা
 $connect->close();
 
-// জেসন আউটপুট পাঠানো
+// ওল্ড ডাটা টেবিল ইঞ্জিনের কাছে ১০০% পিওর জেসন অবজেক্ট রিটার্ন করা
 echo json_encode($output);
 ?>
