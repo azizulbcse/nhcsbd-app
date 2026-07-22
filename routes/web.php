@@ -30,7 +30,8 @@ Route::group([], function () {
     Route::get('/terms-conditions', function () { return view('frontend.terms'); })->name('pages.terms');
     Route::get('/constitution', function () { return view('frontend.constitution'); })->name('pages.constitution');
     Route::get('/about', function () { return view('frontend.about'); })->name('pages.about');
-    
+    Route::get('/phase-ii/apply', function () { return view('frontend.phaseii_apply');})->name('phaseii.apply');
+
     Route::get('/admin-login', function () { 
         return redirect('/nhcsbdapp/nurses_access_789.php'); 
     })->name('auth.admin');

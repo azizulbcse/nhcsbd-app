@@ -42,41 +42,45 @@
         <div class="container-fluid p-0">
             <div class="row g-0">
               
-                <!-- Left Image Side -->
+                <!-- Left Image Side (100% Unchanged UI Class) -->
                 <div class="col-lg-6 cta-image-side d-none d-lg-block">
                     <div class="image-overlay"></div>
                 </div>
 
                 <!-- Right Content Side -->
-                <div class="col-lg-6 cta-content-side d-flex align-items-center">
-                    <div class="content-wrapper p-4 p-md-5">
-                        <span class="est-tag">ESTABLISHED 2024</span>
-                        <h2 class="section-title">Welcome to Nurses Health Care Society - Bangladesh</h2>
+                <div class="col-lg-6 cta-content-side d-flex align-items-center" style="background-color: #ffffff;">
+                    <div class="content-wrapper p-4 p-md-5" style="width: 100%;">
+                        <!-- Smart & Premium Badge -->
+                        <span class="est-tag" style="background: rgba(0, 123, 255, 0.08); color: #007bff; padding: 6px 16px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; letter-spacing: 1px; display: inline-block; margin-bottom: 20px; border: 1px solid rgba(0, 123, 255, 0.15);">ESTABLISHED 2024</span>
                         
-                        <div class="main-description">
-                            <p style="text-align: justify;">The mission and vision of a nurses health care society insurance typically focus on providing comprehensive and accessible healthcare coverage tailored to the unique needs of nurses.</p>
+                        <!-- Sharp & Bold Professional Title -->
+                        <h2 class="section-title" style="font-weight: 800; font-size: 2.3rem; color: #111111; line-height: 1.3; margin-bottom: 20px; letter-spacing: -0.5px;">Welcome to Nurses Health Care Society - Bangladesh</h2>
+                        
+                        <div class="main-description" style="margin-bottom: 25px;">
+                            <p style="text-align: justify; color: #4a5568; font-size: 1.05rem; line-height: 1.75;">The mission and vision of a nurses health care society insurance typically focus on providing comprehensive and accessible healthcare coverage tailored to the unique needs of nurses.</p>
                         </div>
 
-                        <div class="goals-container mt-4">
-                            <div class="goal-item">
-                                <h6>MISSION</h6>
-                                <p style="text-align: justify;">To empower nurses by offering affordable, reliable, and specialized health insurance solutions that prioritize their well-being and professional needs.</p>
+                        <!-- Modern Border-Styled Goals Container -->
+                        <div class="goals-container mt-4" style="display: flex; flex-direction: column; gap: 20px;">
+                            <div class="goal-item" style="border-left: 4px solid #007bff; padding-left: 20px; margin-bottom: 5px;">
+                                <h6 style="font-weight: 700; color: #007bff; letter-spacing: 0.5px; font-size: 1rem; text-transform: uppercase; margin-bottom: 8px;">MISSION</h6>
+                                <p style="text-align: justify; color: #4a5568; font-size: 0.95rem; line-height: 1.65; margin: 0;">To empower nurses by offering affordable, reliable, and specialized health insurance solutions that prioritize their well-being and professional needs.</p>
                             </div>
-                            <div class="goal-item">
-                                <h6>VISION</h6>
-                                <p style="text-align: justify;">To be the leading provider of health insurance for nurses, recognized for our commitment to exceptional service, innovative healthcare solutions, and advocacy for nursing professionals nationwide.</p>
+                            <div class="goal-item" style="border-left: 4px solid #28a745; padding-left: 20px; margin-bottom: 5px;">
+                                <h6 style="font-weight: 700; color: #28a745; letter-spacing: 0.5px; font-size: 1rem; text-transform: uppercase; margin-bottom: 8px;">VISION</h6>
+                                <p style="text-align: justify; color: #4a5568; font-size: 0.95rem; line-height: 1.65; margin: 0;">To be the leading provider of health insurance for nurses, recognized for our commitment to exceptional service, innovative healthcare solutions, and advocacy for nursing professionals nationwide.</p>
                             </div>
                         </div>
 
-                        <p class="final-note">Such a company would likely aim to enhance the health and quality of life of nurses through targeted insurance plans, support programs, and advocacy initiatives tailored to the nursing community.</p>
+                        <p class="final-note" style="text-align: justify; color: #718096; font-size: 0.95rem; line-height: 1.7; font-style: italic; margin-top: 25px; padding-top: 15px; border-top: 1px dashed #e2e8f0;">Such a company would likely aim to enhance the health and quality of life of nurses through targeted insurance plans, support programs, and advocacy initiatives tailored to the nursing community.</p>
 
-                        <!-- Founder Section -->
+                        <!-- Founder Section (Smart & Corporate Signature Look) -->
                         <div class="founder-badge mt-5">
-                            <div class="sign-box">
-                                <img src="{{ asset('frontend/assets/img/sign.png') }}" alt="Signature">
+                            <div class="sign-box" style="border-left: 3px solid #111111; padding-left: 15px; display: inline-block;">
+                                <img src="{{ asset('frontend/assets/img/sign.png') }}" alt="Signature" style="max-height: 55px; width: auto; filter: multiply(1.1); margin-bottom: 6px;">
                                 <br>
-                                <span class="name">Razib Hossain</span><br>
-                                <span class="title">Secretary General & Founder</span>
+                                <span class="name" style="font-weight: 700; font-size: 1.15rem; color: #111111; letter-spacing: 0.3px;">Razib Hossain</span><br>
+                                <span class="title" style="font-size: 0.85rem; color: #718096; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Secretary General & Founder</span>
                             </div>
                         </div>
                     </div>
